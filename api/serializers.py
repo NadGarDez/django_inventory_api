@@ -8,7 +8,7 @@ class ProductoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Producto
-        fields = ['id', 'nombre', 'sku', 'stock_actual']
+        fields = ['id', 'nombre', 'sku', 'stock_actual', 'created_at', 'updated_at']
 
 class ExistenciaSerializer(serializers.ModelSerializer):
     nombre_producto = serializers.ReadOnlyField(source='producto.nombre')
