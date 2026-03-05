@@ -49,3 +49,4 @@ def actualizar_stock(sender, instance, created, **kwargs):
             existencia.cantidad -= instance.cantidad
         
         existencia.save()
+        print(f"Stock actualizado para {instance.producto.nombre}: {existencia.cantidad} unidades")

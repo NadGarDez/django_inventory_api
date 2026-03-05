@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Producto, Existencia, Transaccion
 
+
 class ProductoSerializer(serializers.ModelSerializer):
     # Mostramos el stock actual directamente al consultar el producto
     stock_actual = serializers.IntegerField(source='stock.cantidad', read_only=True)
@@ -16,10 +17,20 @@ class ExistenciaSerializer(serializers.ModelSerializer):
         model = Existencia
         fields = ['producto', 'nombre_producto', 'cantidad', 'ultima_actualizacion']
 
+class ExistenciaConsolidadaSerializer(serializers.ModelSerializer):
+    # Traemos campos específicos del modelo Existencia relacionado
+    cantidad = serializers.IntegerField(source='stock.cantidad', read_only=True)
+    ultima_actualizacion = serializers.DateTimeField(source='stock.ultima_actualizacion', read_only=True)
+
+    class Meta:
+        model = Producto
+        fields = ['id', 'sku', 'nombre', 'cantidad', 'ultima_actualizacion']
+
 class TransaccionSerializer(serializers.ModelSerializer):
+    nombre_producto = serializers.ReadOnlyField(source='producto.nombre')
     class Meta:
         model = Transaccion
-        fields = ['id', 'producto', 'tipo', 'cantidad', 'fecha', 'observacion']
+        fields = ['id', 'producto', 'tipo', 'cantidad', 'fecha', 'observacion', 'nombre_producto']
 
     def validate(self, data):
         """

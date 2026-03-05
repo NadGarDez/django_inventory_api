@@ -1,7 +1,7 @@
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
 from .models import Producto, Existencia, Transaccion
-from .serializers import ProductoSerializer, ExistenciaSerializer, TransaccionSerializer
+from .serializers import TransaccionSerializer, ExistenciaConsolidadaSerializer, ProductoSerializer
 
 class ProductoViewSet(viewsets.ModelViewSet):
     """
@@ -10,13 +10,13 @@ class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
 
-class ExistenciaViewSet(viewsets.ReadOnlyModelViewSet):
+class ExistenciaViewSet(viewsets.ModelViewSet):
     """
-    Solo lectura para consultar el stock actual. 
-    No permitimos POST/PUT aquí; el stock cambia vía Transacciones.
+    CRUD para productos con información de stock integrada.
     """
-    queryset = Existencia.objects.all()
-    serializer_class = ExistenciaSerializer
+    # Usamos select_related para que la consulta sea eficiente y no sature la DB
+    queryset = Producto.objects.select_related('stock').all()
+    serializer_class = ExistenciaConsolidadaSerializer
 
 class TransaccionViewSet(viewsets.ModelViewSet):
     """

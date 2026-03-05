@@ -5,6 +5,7 @@ echo "Esperando a la base de datos..."
 
 # Ejecutar migraciones
 echo "Aplicando migraciones..."
+python manage.py makemigrations
 python manage.py migrate --noinput
 
 # Recolectar archivos estáticos (importante para Nginx)
